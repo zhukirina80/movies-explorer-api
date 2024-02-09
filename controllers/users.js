@@ -71,12 +71,19 @@ const getUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    { new: true, runValidators: true },
-  )
-    .orFail(() => new Error('NotFoundError'))
+
+  User.findOne({ _id: req.user._id, name, email })
+    .then((foundUser) => {
+      if (foundUser) {
+        throw new ConflictError('Данные пользователя не были изменены');
+      }
+
+      return User.findByIdAndUpdate(
+        req.user._id,
+        { name, email },
+        { new: true, runValidators: true },
+      );
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
