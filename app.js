@@ -22,11 +22,11 @@ app.use(express.json());
 
 app.use(requestLogger);
 
+app.use(limiter);
+
 app.use(router);
 
 app.use(errorLogger);
-
-app.use(limiter);
 
 app.use(errors());
 
