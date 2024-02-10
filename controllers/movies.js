@@ -4,17 +4,17 @@ const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .then((movie) => res.status(200).send(movie))
     .catch(next);
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId)
+  Movie.findById(req.params._id)
     .orFail(() => new NotFoundError('Фильм по указанному Id не найден'))
     .then(({ owner }) => {
       if (owner.toString() === req.user._id) {
-        Movie.findOneAndDelete(req.params.movieId)
+        Movie.findOneAndDelete(req.params._id)
           .then((movie) => { res.status(200).send(movie); })
           .catch(next);
       } else {
