@@ -50,14 +50,13 @@ const movieSchema = new mongoose.Schema(
         message: 'Некорректный URL',
       },
     },
+    movieId: {
+      type: Number,
+      required: true,
+    },
     owner: {
       type: mongoose.Types.ObjectId,
       ref: 'user',
-      required: true,
-    },
-    movieId: {
-      type: mongoose.Types.ObjectId,
-      ref: 'movie',
       required: true,
     },
     nameRU: {

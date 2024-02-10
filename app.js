@@ -8,12 +8,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/rateLimiter');
 const { DB_ADDRESS } = require('./config');
 const { router } = require('./routes');
-const auth = require('./middlewares/auth');
 const serverError = require('./middlewares/serverError');
-const { validationUser } = require('./middlewares/validation');
-const {
-  createUser, login,
-} = require('./controllers/users');
 
 const { PORT = 3001 } = process.env;
 
@@ -26,11 +21,6 @@ app.use(helmet());
 app.use(express.json());
 
 app.use(requestLogger);
-
-app.post('/signin', validationUser, login);
-app.post('/signup', validationUser, createUser);
-
-app.use(auth);
 
 app.use(router);
 
