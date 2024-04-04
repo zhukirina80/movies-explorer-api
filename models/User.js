@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
         message: 'Поле является обязательным',
       },
       minlength: [2, 'Минимальная длина имени — 2 символа'],
-      maxlength: [30, 'Максимальная длина имени — 30 символов'],
+      maxlength: [40, 'Максимальная длина имени — 40 символов'],
     },
     email: {
       type: String,

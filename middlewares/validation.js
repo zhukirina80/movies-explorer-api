@@ -9,17 +9,24 @@ const validationUrl = ((value) => {
   throw new BadRequestError('Некорректный адрес URL');
 });
 
+const validationCreateUser = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string().required().min(2).max(40),
+  }),
+});
+
 const validationUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    name: Joi.string().required().min(2).max(30),
   }),
 });
 
 const validationUpdateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(40),
     email: Joi.string().required().email(),
   }),
 });
@@ -48,6 +55,7 @@ const validationMovieId = celebrate({
 
 module.exports = {
   validationUser,
+  validationCreateUser,
   validationUpdateUser,
   validationCreateMovie,
   validationMovieId,

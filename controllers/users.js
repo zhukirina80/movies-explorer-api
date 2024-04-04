@@ -72,26 +72,22 @@ const getUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { name, email } = req.body;
 
-  User.findOne({ _id: req.user._id, name, email })
-    .then((foundUser) => {
-      if (foundUser) {
-        throw new ConflictError('Данные пользователя не были изменены');
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь по указанному Id не найден');
       }
-
-      return User.findByIdAndUpdate(
-        req.user._id,
-        { name, email },
-        { new: true, runValidators: true },
-      );
+      res.status(200).send(user);
     })
-    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
         next(new ConflictError('Пользователь с таким email уже существует'));
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
-      } else if (err.message === 'NotFoundError') {
-        next(new NotFoundError('Пользователь по указанному Id не найден'));
       } else {
         next(err);
       }
